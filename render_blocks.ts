@@ -1,4 +1,4 @@
-enum RCSpriteAttribute{
+enum RCSpriteAttribute {
     ZOffset,
     ZPosition,
     ZVelocity,
@@ -37,30 +37,19 @@ namespace Render {
         }
     }
 
-    /**
- * Apply a directional image animations on a sprite
- * @param sprite the sprite to animate on
- * @param animations the directional animates
- */
-    //% blockId=set_animation
-    //% block="set $sprite=variables_get(mySprite) with animations$animations"
-    //% animations.shadow=create_animation
-    //% group="Animate"
-    //% weight=100
-    //% help=github:pxt-raycasting/docs/set-sprite-animations
     export function setSpriteAnimations(sprite: Sprite, animations: Animations) {
         raycastingRender.spriteAnimations[sprite.id] = animations
     }
 
     /**
- * Create a directional image animations, multi animations will applied to one round dirctions averagely, start from the left. 
- * The reason that directions start from left, is almost all Arcade out-of-box 1 or 2-dirction images are facing left, so that would be convient for using.
- * @param frameInterval the time between changes, eg: 150
- * @param frames1 animation, if this is the first of multi animation it will be used as left, others will 
- * @param frames2 optional, used for 2 or more dirctional
- * @param frames3 optional, used for 3 or more dirctional
- * @param frames4 optional, used for 4 or more dirctional
- */
+     * Create a directional image animations, multi animations will applied to one round dirctions averagely, start from the left. 
+     * The reason that directions start from left, is almost all Arcade out-of-box 1 or 2-dirction images are facing left, so that would be convient for using.
+     * @param frameInterval the time between changes, eg: 150
+     * @param frames1 animation, if this is the first of multi animation it will be used as left, others will 
+     * @param frames2 optional, used for 2 or more dirctional
+     * @param frames3 optional, used for 3 or more dirctional
+     * @param frames4 optional, used for 4 or more dirctional
+     */
     //% blockId=create_animation
     //% block="interval$frameInterval=timePicker animates:$frames1=animation_editor|| $frames2=animation_editor $frames3=animation_editor $frames4=animation_editor"
     //% inlineInputMode=inline
@@ -123,10 +112,32 @@ namespace Render {
      */
     //% blockId=rcRender_toggleViewMode block="toggle current view mode"
     //% group="Basic"
-    //% weight=89
+    //% weight=90
     //% help=github:pxt-raycasting/docs/toggle-view-mode
     export function toggleViewMode() {
         raycastingRender.viewMode = raycastingRender.viewMode == ViewMode.tilemapView ? ViewMode.raycastingView : ViewMode.tilemapView
+    }
+
+    /**
+     * Sets the ceiling tilemap to be rendered
+     * @param ceillingMap The tilemap to be rendered as the ceiling.
+     */
+    //% blockId=rc_Render_setCeilingTilemap 
+    //% block="set ceiling as $tilemap"
+    //% group="Basic"
+    //% weight=89
+    //% tilemap.fieldEditor="tilemap"
+    //% tilemap.fieldOptions.decompileArgumentAsString="true"
+    //% tilemap.fieldOptions.filter="tile"
+    //% tilemap.fieldOptions.taggedTemplate="tilemap"
+    //% tilemap.fieldOptions.tileWidth=8
+    //% help=tiles/set-tile-map
+    export function setCeilingTilemap(tilemap: tiles.TileMapData) {
+        if (tilemap.width != raycastingRender.map.width || tilemap.height != raycastingRender.map.height) {
+            throw "ceiling tilemap dimensions do not match base map"
+        }
+        raycastingRender.ceilingMap = tilemap
+        raycastingRender.ceilingTextures = tilemap.getTileset()
     }
 
     /**
@@ -275,16 +286,16 @@ namespace Render {
     export function setSpriteAttribute(spr: Sprite, attr: RCSpriteAttribute, value: number) {
         switch (attr) {
             case RCSpriteAttribute.ZOffset:
-                raycastingRender.setZOffset(spr, value, 0)
+                raycastingRender.getMotionZ(spr).offset = value
                 break
             case RCSpriteAttribute.ZPosition:
-                raycastingRender.getMotionZ(spr).p = Render.tofpx(value)
+                raycastingRender.getMotionZ(spr).p = value
                 break
             case RCSpriteAttribute.ZVelocity:
-                raycastingRender.getMotionZ(spr).v = Render.tofpx(value)
+                raycastingRender.getMotionZ(spr).v = value
                 break
             case RCSpriteAttribute.ZAcceleration:
-                raycastingRender.getMotionZ(spr).a = Render.tofpx(value)
+                raycastingRender.getMotionZ(spr).a = value
                 break
             default:
         }
@@ -300,16 +311,16 @@ namespace Render {
     //% blockId=rcRender_getSpriteAttribute
     //% weight=74
     //% help=github:pxt-raycasting/docs/get-sprite-attribute
-    export function getSpriteAttribute(spr:Sprite, attr: RCSpriteAttribute): number {
+    export function getSpriteAttribute(spr: Sprite, attr: RCSpriteAttribute): number {
         switch (attr) {
             case RCSpriteAttribute.ZOffset:
                 return raycastingRender.getMotionZ(spr).offset
             case RCSpriteAttribute.ZPosition:
-                return raycastingRender.getMotionZ(spr).p << Render.fpx
+                return raycastingRender.getMotionZ(spr).p
             case RCSpriteAttribute.ZVelocity:
-                return raycastingRender.getMotionZ(spr).v << Render.fpx
+                return raycastingRender.getMotionZ(spr).v
             case RCSpriteAttribute.ZAcceleration:
-                return raycastingRender.getMotionZ(spr).a << Render.fpx
+                return raycastingRender.getMotionZ(spr).a
             default:
                 return 0
         }
@@ -395,11 +406,11 @@ namespace Render {
     //% v.shadow="spriteSpeedPicker"
     //% va.shadow="spriteSpeedPicker"
     //% help=github:pxt-raycasting/docs/move-with-controller
-    export function moveWithController(v: number = 2, va: number = 3, cameraSway?:number) {
+    export function moveWithController(v: number = 2, va: number = 3, cameraSway?: number) {
         raycastingRender.velocity = v
         raycastingRender.velocityAngle = va
-        if(cameraSway!=undefined)
-            raycastingRender.cameraSway=cameraSway|0
+        if (cameraSway != undefined)
+            raycastingRender.cameraSway = cameraSway | 0
     }
 
     /**
