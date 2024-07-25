@@ -130,7 +130,7 @@ namespace Render {
     //% tilemap.fieldOptions.decompileArgumentAsString="true"
     //% tilemap.fieldOptions.filter="tile"
     //% tilemap.fieldOptions.taggedTemplate="tilemap"
-    //% tilemap.fieldOptions.tileWidth=8
+    //% tilemap.fieldOptions.tileWidth=16
     //% help=tiles/set-tile-map
     export function setCeilingTilemap(tilemap: tiles.TileMapData) {
         if (tilemap.width != raycastingRender.map.width || tilemap.height != raycastingRender.map.height) {
