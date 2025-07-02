@@ -107,6 +107,13 @@ namespace Render {
         //     this.sprSelf._y = v * this.tilemapScaleSize as any as Fx8
         // }
 
+    //% block
+    //% group="Basic"
+    //% weight=89
+    export function Ceiling(ceil: tiles.TileMapData) {
+        Render.setCeilingTilemap(ceil)
+    }
+
         get dirX(): number {
             return this.dirXFpx / fpx_scale
         }
